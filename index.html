@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Checkpoint Calculator</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 20px;
+        }
+
+        input[type=number] {
+            width: 60px;
+        }
+
+        .btn {
+            margin: 5px;
+            padding: 5px 10px;
+        }
+
+        .output {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Checkpoint Calculator</h2>
+
+    <label>Set Current Checkpoint:
+        <input type="number" id="currentCpInput" value="10" min="0">
+        <button onclick="setCurrentCp()">Set</button>
+    </label>
+
+    <div class="output">
+        <p><strong>Current Checkpoint:</strong> <span id="currentCp">0</span></p>
+        <p><strong>Reset Checkpoint:</strong> <span id="resetCp">0</span></p>
+    </div>
+
+    <hr>
+
+    <button class="btn" onclick="handleEvent('follow')">Follow</button>
+    <button class="btn" onclick="handleEvent('sub')">Subscriber</button>
+
+    <br><br>
+
+    <label>Donation Amount: <input type="number" id="donoAmount" value="1" min="1"></label>
+    <select id="donoType">
+        <option value="usd">$</option>
+        <option value="bits">Bits</option>
+    </select>
+    <button class="btn" onclick="handleDonation()">Donate</button>
+
+    <br><br>
+
+    <label>Raiders Count: <input type="number" id="raidersCount" value="10" min="1"></label>
+    <button class="btn" onclick="handleRaid()">Raid</button>
+
+    <script>
+        let currentCp = 0;
+        let resetCp = 0;
+
+        function updateDisplay() {
+            document.getElementById('currentCp').textContent = Math.max(currentCp, 0);
+            document.getElementById('resetCp').textContent = resetCp;
+        }
+
+        function setCurrentCp() {
+            currentCp = parseInt(document.getElementById('currentCpInput').value) || 0;
+            updateDisplay();
+        }
+
+        function handleEvent(type) {
+            if (type === 'follow') {
+                currentCp -= 1;
+                resetCp += 1;
+            } else if (type === 'sub') {
+                currentCp -= 2;
+                resetCp += 2;
+            }
+            updateDisplay();
+        }
+
+        function handleDonation() {
+            const amount = parseInt(document.getElementById('donoAmount').value) || 0;
+            const type = document.getElementById('donoType').value;
+
+            if (type === 'usd') {
+                currentCp -= amount;
+                resetCp += amount;
+            } else if (type === 'bits') {
+                const bitAmount = Math.floor(amount / 100);
+                currentCp -= bitAmount;
+                resetCp += bitAmount;
+            }
+            updateDisplay();
+        }
+
+        function handleRaid() {
+            const count = parseInt(document.getElementById('raidersCount').value) || 0;
+            const cpChange = Math.floor(count / 10);
+            currentCp -= cpChange;
+            resetCp += cpChange;
+            updateDisplay();
+        }
+
+        // Initialize
+        setCurrentCp();
+    </script>
+
+</body>
+
+</html>
