@@ -5,58 +5,136 @@
     <meta charset="UTF-8">
     <title>Checkpoint Calculator</title>
     <style>
+        html,
         body {
-            font-family: Arial;
-            margin: 20px;
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
         }
 
-        input[type=number] {
-            width: 60px;
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to right, #82368c, #534b8e);
         }
 
-        .btn {
-            margin: 5px;
-            padding: 5px 10px;
+        .box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 12px;
+            border-radius: 8px;
+            max-width: 320px;
+            margin: auto;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #2e133d;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+            margin-bottom: 8px;
+            box-sizing: border-box;
+            border-radius: 4px;
+            border: 1px solid #a97bc5;
+            background-color: #f5f0fa;
+            color: #2e133d;
+        }
+
+        button {
+            width: 100%;
+            padding: 6px;
+            margin-top: 5px;
+            background: #6e3d8c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #572e71;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
+
+        .row button {
+            width: 48%;
         }
 
         .output {
-            margin-top: 20px;
+            background: #e7d3f5;
+            padding: 8px;
+            border-radius: 5px;
+            margin-top: 10px;
+            text-align: center;
+            border: 1px solid #caa5e4;
+        }
+
+        .output p {
+            margin: 4px 0;
+            font-weight: bold;
+            color: #3a1c51;
+        }
+
+        small {
+            font-size: 12px;
+            color: #654b76;
         }
     </style>
 </head>
 
 <body>
 
-    <h2>Checkpoint Calculator</h2>
+    <div class="box">
+        <h2>Checkpoint Tracker</h2>
 
-    <label>Set Current Checkpoint:
+        <label>Current CP</label>
         <input type="number" id="currentCpInput" value="10" min="0">
-        <button onclick="setCurrentCp()">Set</button>
-    </label>
+        <button onclick="setCurrentCp()">Set CP</button>
 
-    <div class="output">
-        <p><strong>Current Checkpoint:</strong> <span id="currentCp">0</span></p>
-        <p><strong>Reset Checkpoint:</strong> <span id="resetCp">0</span></p>
+        <div class="output">
+            <p>🟢 Current CP: <span id="currentCp">0</span></p>
+            <p>🔁 Reset CP: <span id="resetCp">0</span></p>
+        </div>
+
+        <div class="row">
+            <button onclick="handleEvent('follow')" title="-1 CP, +1 Reset">+ Follow</button>
+            <button onclick="handleEvent('sub')" title="-2 CP, +2 Reset">+ Sub</button>
+        </div>
+
+        <label>Donation</label>
+        <input type="number" id="donoAmount" value="1" min="1">
+        <select id="donoType" title="$ = -1 CP/$ | Bits = -1 CP/100 bits">
+            <option value="usd">$</option>
+            <option value="bits">Bits</option>
+        </select>
+        <button onclick="handleDonation()">Donation</button>
+
+        <label>Raiders</label>
+        <input type="number" id="raidersCount" value="10" min="1" title="1 CP per 10 raiders">
+        <button onclick="handleRaid()">Raid</button>
+
     </div>
-
-    <hr>
-
-    <button class="btn" onclick="handleEvent('follow')">Follow</button>
-    <button class="btn" onclick="handleEvent('sub')">Subscriber</button>
-
-    <br><br>
-
-    <label>Donation Amount: <input type="number" id="donoAmount" value="1" min="1"></label>
-    <select id="donoType">
-        <option value="usd">$</option>
-        <option value="bits">Bits</option>
-    </select>
-    <button class="btn" onclick="handleDonation()">Donate</button>
-
-    <br><br>
-
-    <label>Raiders Count: <input type="number" id="raidersCount" value="10" min="1"></label>
-    <button class="btn" onclick="handleRaid()">Raid</button>
 
     <script>
         let currentCp = 0;
@@ -84,29 +162,34 @@
         }
 
         function handleDonation() {
-            const amount = parseInt(document.getElementById('donoAmount').value) || 0;
+            const amount = parseFloat(document.getElementById('donoAmount').value) || 0;
             const type = document.getElementById('donoType').value;
 
             if (type === 'usd') {
-                currentCp -= amount;
-                resetCp += amount;
-            } else if (type === 'bits') {
+                const change = Math.floor(amount);
+                currentCp -= change;
+                resetCp += change;
+            } else {
                 const bitAmount = Math.floor(amount / 100);
                 currentCp -= bitAmount;
                 resetCp += bitAmount;
             }
+
+            currentCp = Math.max(Math.floor(currentCp), 0);
             updateDisplay();
         }
 
         function handleRaid() {
             const count = parseInt(document.getElementById('raidersCount').value) || 0;
             const cpChange = Math.floor(count / 10);
+
             currentCp -= cpChange;
             resetCp += cpChange;
+
+            currentCp = Math.max(Math.floor(currentCp), 0);
             updateDisplay();
         }
-
-        // Initialize
+        // Initialize display
         setCurrentCp();
     </script>
 
