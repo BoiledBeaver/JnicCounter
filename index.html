@@ -109,11 +109,12 @@
         <h2>Checkpoint Tracker</h2>
 
         <label>Current CP</label>
-        <input type="number" id="currentCpInput" value="10" min="0">
+        <input type="number" id="currentCpInput" value="1" min="1">
         <button onclick="setCurrentCp()">Set CP</button>
         <button onclick="incrementCurrentCp()">CP +1</button>
 
         <div class="output">
+            <p>🏆 PB CP: <span id="pbCp">0</span></p>
             <p>🟢 Current CP: <span id="currentCp">0</span></p>
             <p>🔁 Reset CP: <span id="resetCp">0</span></p>
         </div>
@@ -139,14 +140,20 @@
     <script>
         let currentCp = 0;
         let resetCp = 0;
+        let pbCp = 0;
 
         function updateDisplay() {
-            document.getElementById('currentCp').textContent = Math.max(currentCp, 0);
+            currentCp = Math.floor(currentCp);
+            if (currentCp > pbCp) pbCp = currentCp;
+
+            document.getElementById('currentCp').textContent = currentCp;
             document.getElementById('resetCp').textContent = resetCp;
+            document.getElementById('pbCp').textContent = pbCp;
         }
 
         function setCurrentCp() {
-            currentCp = parseInt(document.getElementById('currentCpInput').value) || 0;
+            currentCp = Math.floor(parseInt(document.getElementById('currentCpInput').value) || 0);
+            if (currentCp > pbCp) pbCp = currentCp;
             updateDisplay();
         }
 
