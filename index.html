@@ -111,12 +111,12 @@
         <label>Current CP</label>
         <input type="number" id="currentCpInput" value="10" min="0">
         <button onclick="setCurrentCp()">Set CP</button>
+        <button onclick="incrementCurrentCp()">CP +1</button>
 
         <div class="output">
             <p>🟢 Current CP: <span id="currentCp">0</span></p>
             <p>🔁 Reset CP: <span id="resetCp">0</span></p>
         </div>
-
         <div class="row">
             <button onclick="handleEvent('follow')" title="-1 CP, +1 Reset">+ Follow</button>
             <button onclick="handleEvent('sub')" title="-2 CP, +2 Reset">+ Sub</button>
@@ -191,6 +191,12 @@
         }
         // Initialize display
         setCurrentCp();
+
+        function incrementCurrentCp() {
+            currentCp += 1;
+            currentCp = Math.floor(currentCp);
+            updateDisplay();
+        }
     </script>
 
 </body>
